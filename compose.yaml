@@ -1,0 +1,41 @@
+name: couchbase
+services:
+  db:
+    image: couchbase:latest
+    ports:
+      - 8091-8097:8091-8097
+      - 9123:9123
+      - 11207:11207
+      - 11210:11210
+      - 11280:11280
+      - 18091-18097:18091-18097
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - type: volume
+        source: storage
+        target: /opt/couchbase/var
+  gateway:
+    image: couchbase/sync-gateway:latest
+    ports:
+      - 4984-4986:4984-4986
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4984"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - type: bind
+        source: ./config/sync-gateway.json
+        target: /tmp/config/sync-gateway.json
+    command: ["/tmp/config/sync-gateway.json"]
+    profiles:
+      - sync-gateway
+volumes:
+  storage:

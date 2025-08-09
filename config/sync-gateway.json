@@ -1,0 +1,22 @@
+{
+  "api": {
+    "admin_interface": "0.0.0.0:4985",
+    "metrics_interface": "0.0.0.0:4986"
+  },
+  "bootstrap": {
+    "server": "couchbases://db",
+    "server_tls_skip_verify": true,
+    "username": "sync_gateway",
+    "password": "password"
+  },
+  "logging": {
+    "console": {
+      "enabled": true,
+      "log_level": "info",
+      "log_keys": [
+        "*"
+      ]
+    }
+  }
+}
+
